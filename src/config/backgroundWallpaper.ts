@@ -70,17 +70,17 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 是否允许用户通过控制面板切换横幅标题显示
 			switchable: true,
 			// 主页横幅主标题
-			title: "Lovely firefly!",
+			title: "雕将军",
 			// 主页横幅主标题字体大小
 			titleSize: "3.8rem",
 			// 主页横幅副标题
 			subtitle: [
-				"In Reddened Chrysalis, I Once Rest",
-				"From Shattered Sky, I Free Fall",
-				"Amidst Silenced Stars, I Deep Sleep",
-				"Upon Lighted Fyrefly, I Soon Gaze",
-				"From Undreamt Night, I Thence Shine",
-				"In Finalized Morrow, I Full Bloom",
+				"记录生活随笔，分享日常碎碎念",
+				"精选实用网盘资源，轻松获取",
+				"高性价比流量卡推荐，省心好用",
+				"偶尔摆烂，时常分享干货",
+				"在文字里，遇见温暖与实用",
+				"这里有心情，也有满满福利",
 			],
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",

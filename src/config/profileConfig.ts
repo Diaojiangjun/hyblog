@@ -9,10 +9,10 @@ export const profileConfig: ProfileConfig = {
 	avatar: "assets/images/avatar.avif",
 
 	// 名字
-	name: "Firefly",
+	name: "鹏星",
 
 	// 个人签名
-	bio: "Hello, I'm Firefly.",
+	bio: "分享资源、网盘拉新、流量卡推荐，偶尔摆烂，时常干货满满。",
 
 	// 链接配置
 	// 已经预装的图标集：fa7-brands，fa7-regular，fa7-solid，material-symbols，simple-icons
@@ -24,19 +24,25 @@ export const profileConfig: ProfileConfig = {
 		{
 			name: "qq",
 			icon: "fa7-brands:qq",
-			url: "https://qm.qq.com/q/ZGsFa8qX2G",
+			url: "https://qm.qq.com/q/YpmYMVe0EM",
 			showName: false,
-		},
+		 },
+		// {
+		// 	name: "GitHub",
+		// 	icon: "fa7-brands:github",
+		// 	url: "https://github.com/CuteLeaf",
+		// 	showName: false,
+		// },
+		// {
+		// 	name: "Email",
+		// 	icon: "fa7-solid:envelope",
+		// 	url: "mailto:xiaye@msn.com",
+		// 	showName: false,
+		// }
 		{
-			name: "GitHub",
-			icon: "fa7-brands:github",
-			url: "https://github.com/CuteLeaf",
-			showName: false,
-		},
-		{
-			name: "Email",
-			icon: "fa7-solid:envelope",
-			url: "mailto:xiaye@msn.com",
+			name: "telegram",
+			icon: "fa7-brands:telegram",
+			url: "https://t.me/ucbaidu",
 			showName: false,
 		},
 		{
