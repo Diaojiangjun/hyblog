@@ -107,7 +107,7 @@ default-character-set=utf8mb4
 
 ### 初始化
 
-在mysql目录下的bin目录下输入“mysqld --initialize --console”，如下图所示：
+在mysql目录下的bin目录下输入`mysqld --initialize --console`，如下图所示：
 
 ![image-20260523222956690](_assets/image-20260523222956690.png)
 
