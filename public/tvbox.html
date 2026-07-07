@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="format-detection" content="telephone=no">
+    <title>TVBox配置生成器 - 在线制作TVBox接口配置文件</title>
+    <meta name="keywords" content="TVBox配置,TVBox接口,TVBox配置生成器,TVBox直播源,TVBox点播源">
+    <meta name="description" content="免费在线TVBox配置生成器，支持生成TVBox.json配置文件。添加视频源、直播源、解析接口，一键导出配置文件和Base64编码。">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/favicon/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon/favicon-light-32.png">
+    <link rel="icon" type="image/png" sizes="128x128" href="/favicon/favicon-light-128.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon/favicon-light-192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon/favicon-light-180.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 640px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .header-icon {
+            width: 56px;
+            height: 56px;
+            background: transparent;
+            border-radius: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #2c3e50;
+            font-size: 56px;
+        }
+
+        .header-text h1 {
+            font-size: 28px;
+            color: #1a1a1a;
+            margin-bottom: 8px;
+        }
+
+        @media (max-width: 640px) {
+            .header-text h1 {
+                font-size: 22px;
+            }
+        }
+
+        .header-text p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+                padding-bottom: calc(12px + env(safe-area-inset-bottom, 0));
+            }
+
+            .header {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+
+            .header-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 48px;
+            }
+
+            .card-header {
+                padding: 16px 20px;
+            }
+
+            .card-body {
+                padding: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .faq-container {
+                padding: 30px 20px;
+            }
+
+            .faq-title {
+                font-size: 1.5rem;
+            }
+
+            .faq-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .code-editor {
+                height: 300px;
+                font-size: 0.8rem;
+            }
+
+            .modal-content {
+                max-width: 95%;
+                padding: 20px;
+            }
+
+            #base64Output {
+                height: 100px;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header-text h1 {
+                font-size: 20px;
+            }
+
+            .header-text p {
+                font-size: 13px;
+            }
+
+            .btn-add {
+                padding: 10px;
+                font-size: 0.9rem;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .config-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 0;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            background: #f8f8f8;
+            border-bottom: 1px solid #e8e8e8;
+            margin-bottom: 0;
+        }
+
+        .card-header h2 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 6px;
+        }
+
+        .card-header p {
+            color: #666;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        @media (max-width: 768px) {
+            .form-group input,
+            .form-group select {
+                font-size: 16px; /* 防止iOS自动缩放 */
+                padding: 12px 14px;
+            }
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        @media (max-width: 640px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .checkbox-group {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: #374151;
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .config-item {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 12px;
+            position: relative;
+            transition: all 0.2s;
+        }
+
+        .config-item:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e0;
+        }
+
+        .item-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 12px;
+        }
+
+        .btn-icon {
+            padding: 6px;
+            border: none;
+            background: transparent;
+            color: #ef4444;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: #fee2e2;
+        }
+
+        .btn-add {
+            width: 100%;
+            padding: 12px;
+            margin-top: 16px;
+            border: none;
+            background: #2c3e50;
+            color: white;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-add:hover {
+            background: #34495e;
+            transform: translateY(-1px);
+        }
+
+        .preview-panel {
+            position: sticky;
+            top: 20px;
+        }
+
+        .code-editor {
+            width: 100%;
+            height: 400px;
+            padding: 16px;
+            background: #f8fafc;
+            color: #334155;
+            font-family: 'Fira Code', 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 0.85rem;
+            line-height: 1.6;
+            border-radius: 8px;
+            resize: vertical;
+            border: 1px solid #e2e8f0;
+        }
+
+        .code-editor:focus {
+            outline: none;
+            border-color: #2c3e50;
+        }
+
+        .code-error {
+            margin-top: 12px;
+            padding: 12px;
+            background: #fee2e2;
+            color: #dc2626;
+            border-radius: 8px;
+            font-size: 13px;
+            display: none;
+        }
+
+        .code-error.show {
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        @media (hover: hover) {
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+        }
+
+        .btn:active {
+            transform: translateY(0) scale(0.98);
+        }
+
+        .btn-primary {
+            background: #2c3e50;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #34495e;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+        }
+
+        .btn-danger {
+            background: white;
+            color: #dc2626;
+            border: 2px solid #fecaca;
+        }
+
+        .btn-danger:hover {
+            background: #fee2e2;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .modal-backdrop.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .modal-header h3 {
+            font-size: 20px;
+            color: #1a1a1a;
+        }
+
+        .modal-close {
+            padding: 8px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f3f4f6;
+        }
+
+        .form-hint {
+            display: block;
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 4px;
+        }
+
+        .icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* ===== FAQ Section 样式 ===== */
+        .faq-section {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-top: 40px;
+            overflow: hidden;
+        }
+
+        .faq-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 50px 30px;
+        }
+
+        .faq-title {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 0 0 12px 0;
+        }
+
+        .faq-title svg {
+            color: #2c3e50;
+        }
+
+        .faq-subtitle {
+            text-align: center;
+            color: #64748b;
+            font-size: 1rem;
+            margin: 0 0 40px 0;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .faq-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .faq-item {
+            background: #f8fafc;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .faq-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border-color: #cbd5e1;
+        }
+
+        .faq-question {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0 0 16px 0;
+            line-height: 1.4;
+        }
+
+        .faq-answer {
+            color: #475569;
+            line-height: 1.8;
+        }
+
+        .faq-answer p {
+            margin: 0 0 12px 0;
+        }
+
+        .faq-answer p:last-child {
+            margin-bottom: 0;
+        }
+
+        .faq-answer ul,
+        .faq-answer ol {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .faq-answer li {
+            margin-bottom: 8px;
+        }
+
+        .faq-answer code {
+            background: #e2e8f0;
+            color: #2c3e50;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: Consolas, Monaco, 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .faq-answer strong {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 页面标题 -->
+        <div class="header">
+            <div class="header-content">
+                <div class="header-icon">📺</div>
+                <div class="header-text">
+                    <h1>TVBox 配置生成器</h1>
+                    <p>在线制作 TVBox 接口配置文件，支持添加视频源、直播源、解析接口，一键导出 JSON 和 Base64 编码</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主要内容区 -->
+        <div class="main-grid">
+            <!-- 左侧配置面板 -->
+            <div class="config-panel">
+                
+                <!-- 全局设置 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>⚙️ 全局设置</h2>
+                        <p>配置爬虫 Jar 包和背景图片</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group">
+                            <label>爬虫 Jar 包地址 (Spider)</label>
+                            <input type="text" id="spiderInput" placeholder="例如: ./custom_spider.jar 或 http://...">
+                        </div>
+                        <div class="form-group">
+                            <label>背景图片地址 (Wallpaper)</label>
+                            <input type="text" id="wallpaperInput" value="https://api.kdcc.cn" placeholder="例如: https://api.kdcc.cn">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 视频源配置 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>🎬 视频源 (Sites)</h2>
+                        <p>添加苹果 CMS v10 或其他类型的视频源接口</p>
+                    </div>
+                    <div class="card-body">
+                        <div id="sitesList"></div>
+                        <button type="button" id="addSiteBtn" class="btn-add">
+                            ➕ 新增源
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 解析接口配置 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>▶️ 解析接口 (Parses)</h2>
+                        <p>配置视频聚合解析接口</p>
+                    </div>
+                    <div class="card-body">
+                        <div id="parsesList"></div>
+                        <button type="button" id="addParseBtn" class="btn-add">
+                            ➕ 新增解析
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 直播源配置 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h2>📡 直播源 (Lives)</h2>
+                        <p>配置直播线路，支持 M3U/TXT 地址与 EPG</p>
+                    </div>
+                    <div class="card-body">
+                        <div id="livesList"></div>
+                        <button type="button" id="addLiveBtn" class="btn-add">
+                            ➕ 新增线路
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- 右侧预览和操作 -->
+            <div class="preview-panel">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>💻 配置预览</h2>
+                        <p>实时生成的 JSON 配置代码</p>
+                    </div>
+                    <div>
+                        <div style="position: relative;">
+                            <textarea id="jsonEditor" spellcheck="false" class="code-editor"></textarea>
+                            <button type="button" id="copyJsonBtn" style="position: absolute; top: 12px; right: 12px; padding: 8px 16px; background: rgba(255, 255, 255, 0.9); border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 500; color: #374151; transition: all 0.2s; backdrop-filter: blur(4px); box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);" onmouseover="this.style.background='rgba(255, 255, 255, 1)'" onmouseout="this.style.background='rgba(255, 255, 255, 0.9)'">
+                                📋 复制 JSON
+                            </button>
+                        </div>
+                        <div id="jsonError" class="code-error"></div>
+                    </div>
+                    <div class="button-group">
+                        <button type="button" id="downloadBtn" class="btn btn-primary">
+                            ⬇️ 下载 tvbox.json
+                        </button>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                            <button type="button" id="base64Btn" class="btn btn-secondary">
+                                📄 Base64 编码
+                            </button>
+                            <button type="button" id="resetBtn" class="btn btn-danger">
+                                🔄 重置配置
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <section class="faq-section">
+        <div class="faq-container">
+            <h2 class="faq-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <title>FAQ图标</title>
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+                TVBox配置常见问题
+            </h2>
+            <p class="faq-subtitle">关于TVBox配置生成器的使用说明和技术解答</p>
+
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3 class="faq-question">TVBox配置生成器是什么？</h3>
+                    <div class="faq-answer">
+                        <p>这是一个免费的在线工具，用于快速生成 TVBox 所需的 JSON 配置文件。</p>
+                        <ul>
+                            <li>添加视频源（Sites）</li>
+                            <li>添加直播源（Lives）</li>
+                            <li>配置解析接口（Parses）</li>
+                            <li>一键导出 JSON 和 Base64</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-question">生成后的配置如何使用？</h3>
+                    <div class="faq-answer">
+                        <ol>
+                            <li>在本页完成配置</li>
+                            <li>点击“下载 tvbox.json”</li>
+                            <li>上传到可访问地址</li>
+                            <li>在 TVBox 中填入配置地址并重启</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-question">视频源（Sites）如何填写？</h3>
+                    <div class="faq-answer">
+                        <p>填写源名称和完整 API 地址，例如 <code>https://example.com/api.php/provide/vod</code>，并按需开启可搜索/快速搜索/可筛选。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-question">直播源（Lives）支持哪些格式？</h3>
+                    <div class="faq-answer">
+                        <p>支持 <strong>M3U</strong> 与 <strong>TXT</strong>。TXT 格式为 <code>频道名,播放地址</code>。可选填写 EPG 地址显示节目单。</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <h3 class="faq-question">Base64 编码怎么用？</h3>
+                    <div class="faq-answer">
+                        <p>点击“Base64编码”可得到编码字符串，格式为 <code>8位随机字符**Base64内容</code>，可直接作为 TVBox 配置地址使用。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Base64 弹窗 -->
+    <div id="base64Modal" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Base64 编码</h3>
+                <button type="button" id="closeModalBtn" class="modal-close">✕</button>
+            </div>
+            <div>
+                <p style="margin-bottom: 12px; color: #666; font-size: 14px;">复制以下 Base64 编码到 TVBox 应用中使用：</p>
+                <textarea id="base64Output" readonly style="width: 100%; height: 150px; padding: 12px; background: #f3f4f6; border: 2px solid #e5e7eb; border-radius: 8px; font-family: monospace; font-size: 13px; resize: none;"></textarea>
+                <button type="button" onclick="copyBase64()" class="btn btn-primary" style="width: 100%; margin-top: 12px;">
+                    📋 复制到剪贴板
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // TVBox 配置生成器逻辑
+        const defaultFlags = ["youku", "qq", "iqiyi", "qiyi", "letv", "sohu", "tudou", "pptv", "mgtv", "wasu"];
+        
+        let config = {
+            spider: "",
+            wallpaper: "https://api.kdcc.cn",
+            sites: [],
+            parses: [],
+            lives: []
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('TVBox Config Generator initializing...');
+            
+            addSite();
+            addParse();
+            addLive();
+            
+            updateJsonDisplay();
+            bindEvents();
+        });
+
+        function bindEvents() {
+            const addSiteBtn = document.getElementById('addSiteBtn');
+            if (addSiteBtn) addSiteBtn.addEventListener('click', addSite);
+
+            const addParseBtn = document.getElementById('addParseBtn');
+            if (addParseBtn) addParseBtn.addEventListener('click', addParse);
+
+            const addLiveBtn = document.getElementById('addLiveBtn');
+            if (addLiveBtn) addLiveBtn.addEventListener('click', addLive);
+
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn) downloadBtn.addEventListener('click', downloadJson);
+
+            const base64Btn = document.getElementById('base64Btn');
+            if (base64Btn) base64Btn.addEventListener('click', showBase64Modal);
+
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) resetBtn.addEventListener('click', resetConfig);
+
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            if (closeModalBtn) closeModalBtn.addEventListener('click', hideBase64Modal);
+
+            const copyJsonBtn = document.getElementById('copyJsonBtn');
+            if (copyJsonBtn) copyJsonBtn.addEventListener('click', copyJson);
+
+            const modalBackdrop = document.getElementById('base64Modal');
+            if (modalBackdrop) {
+                modalBackdrop.addEventListener('click', function(e) {
+                    if (e.target === modalBackdrop) hideBase64Modal();
+                });
+            }
+
+            const spiderInput = document.getElementById('spiderInput');
+            const wallpaperInput = document.getElementById('wallpaperInput');
+            if (spiderInput) spiderInput.addEventListener('input', updateGlobalConfig);
+            if (wallpaperInput) wallpaperInput.addEventListener('input', updateGlobalConfig);
+
+            const jsonEditor = document.getElementById('jsonEditor');
+            if (jsonEditor) {
+                jsonEditor.addEventListener('blur', function() {
+                    try {
+                        const parsed = JSON.parse(this.value);
+                        config = parsed;
+                        renderAll();
+                        document.getElementById('jsonError').classList.remove('show');
+                    } catch (e) {
+                        const errorEl = document.getElementById('jsonError');
+                        errorEl.textContent = e.message;
+                        errorEl.classList.add('show');
+                    }
+                });
+            }
+        }
+
+        function updateGlobalConfig() {
+            config.spider = document.getElementById('spiderInput').value;
+            config.wallpaper = document.getElementById('wallpaperInput').value;
+            updateJsonDisplay();
+        }
+
+        function addSite() {
+            const site = {
+                key: "site_" + Date.now(),
+                name: "",
+                type: 1,
+                api: "",
+                searchable: 1,
+                quickSearch: 1,
+                filterable: 1
+            };
+            config.sites.push(site);
+            renderSites();
+            updateJsonDisplay();
+        }
+
+        function removeSite(index) {
+            if (confirm('确定要删除这个视频源吗？')) {
+                config.sites.splice(index, 1);
+                renderSites();
+                updateJsonDisplay();
+            }
+        }
+
+        function addParse() {
+            const parse = {
+                name: "新解析接口",
+                type: 0,
+                url: "",
+                ext: { flag: [...defaultFlags] }
+            };
+            config.parses.push(parse);
+            renderParses();
+            updateJsonDisplay();
+        }
+
+        function removeParse(index) {
+            if (confirm('确定要删除这个解析接口吗？')) {
+                config.parses.splice(index, 1);
+                renderParses();
+                updateJsonDisplay();
+            }
+        }
+
+        function addLive() {
+            const live = {
+                name: "",
+                type: 0,
+                url: "",
+                epg: ""
+            };
+            config.lives.push(live);
+            renderLives();
+            updateJsonDisplay();
+        }
+
+        function removeLive(index) {
+            if (confirm('确定要删除这个直播源吗？')) {
+                config.lives.splice(index, 1);
+                renderLives();
+                updateJsonDisplay();
+            }
+        }
+
+        function renderAll() {
+            renderSites();
+            renderParses();
+            renderLives();
+        }
+
+        function renderSites() {
+            const container = document.getElementById('sitesList');
+            if (!container) return;
+
+            container.innerHTML = config.sites.map((site, index) => `
+                <div class="config-item" data-index="${index}">
+                    <div class="item-actions">
+                        <button type="button" class="btn-icon" onclick="removeSite(${index})" title="删除">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>源名称</label>
+                            <input type="text" value="${escapeHtml(site.name)}" onchange="updateSite(${index}, 'name', this.value)" placeholder="例如: 🎬我的视频源">
+                        </div>
+                        <div class="form-group">
+                            <label>API 接口地址</label>
+                            <input type="text" value="${escapeHtml(site.api)}" onchange="updateSite(${index}, 'api', this.value)" placeholder="例如: https://example.com/api.php/provide/vod">
+                        </div>
+                    </div>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" ${site.searchable ? 'checked' : ''} onchange="updateSite(${index}, 'searchable', this.checked ? 1 : 0)">
+                            <span>可搜索</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" ${site.quickSearch ? 'checked' : ''} onchange="updateSite(${index}, 'quickSearch', this.checked ? 1 : 0)">
+                            <span>快速搜索</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" ${site.filterable ? 'checked' : ''} onchange="updateSite(${index}, 'filterable', this.checked ? 1 : 0)">
+                            <span>可筛选</span>
+                        </label>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateSite(index, field, value) {
+            config.sites[index][field] = value;
+            updateJsonDisplay();
+        }
+
+        function renderParses() {
+            const container = document.getElementById('parsesList');
+            if (!container) return;
+
+            container.innerHTML = config.parses.map((parse, index) => `
+                <div class="config-item" data-index="${index}">
+                    <div class="item-actions">
+                        <button type="button" class="btn-icon" onclick="removeParse(${index})" title="删除">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>解析名称</label>
+                            <input type="text" value="${escapeHtml(parse.name)}" onchange="updateParse(${index}, 'name', this.value)" placeholder="例如: 聚合解析">
+                        </div>
+                        <div class="form-group">
+                            <label>解析 URL</label>
+                            <input type="text" value="${escapeHtml(parse.url)}" onchange="updateParse(${index}, 'url', this.value)" placeholder="例如: https://jx.example.com/?url=">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>平台标识 (Flags)</label>
+                        <input type="text" value="${parse.ext.flag.join(', ')}" onchange="updateParseFlags(${index}, this.value)" placeholder="用逗号分隔，如: qq, youku, qiyi">
+                        <span class="form-hint">默认包含: ${defaultFlags.join(', ')}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateParse(index, field, value) {
+            config.parses[index][field] = value;
+            updateJsonDisplay();
+        }
+
+        function updateParseFlags(index, value) {
+            const flags = value.split(/,|，/).map(s => s.trim()).filter(s => s);
+            config.parses[index].ext.flag = flags;
+            updateJsonDisplay();
+        }
+
+        function renderLives() {
+            const container = document.getElementById('livesList');
+            if (!container) return;
+
+            container.innerHTML = config.lives.map((live, index) => `
+                <div class="config-item" data-index="${index}">
+                    <div class="item-actions">
+                        <button type="button" class="btn-icon" onclick="removeLive(${index})" title="删除">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                        </button>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>线路名称</label>
+                            <input type="text" value="${escapeHtml(live.name)}" onchange="updateLive(${index}, 'name', this.value)" placeholder="例如: 央卫直播">
+                        </div>
+                        <div class="form-group">
+                            <label>直播类型</label>
+                            <select onchange="updateLive(${index}, 'type', parseInt(this.value))">
+                                <option value="0" ${live.type === 0 ? 'selected' : ''}>M3U格式</option>
+                                <option value="1" ${live.type === 1 ? 'selected' : ''}>TXT格式</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>直播地址</label>
+                        <input type="text" value="${escapeHtml(live.url)}" onchange="updateLive(${index}, 'url', this.value)" placeholder="例如: https://example.com/live.txt">
+                    </div>
+                    <div class="form-group">
+                        <label>EPG 地址（可选）</label>
+                        <input type="text" value="${escapeHtml(live.epg)}" onchange="updateLive(${index}, 'epg', this.value)" placeholder="例如: https://example.com/epg.xml">
+                        <span class="form-hint">电子节目单地址，用于显示节目预告</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateLive(index, field, value) {
+            config.lives[index][field] = value;
+            updateJsonDisplay();
+        }
+
+        function updateJsonDisplay() {
+            const json = JSON.stringify(config, null, 2);
+            const editor = document.getElementById('jsonEditor');
+            if (editor) editor.value = json;
+        }
+
+        function downloadJson() {
+            const blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "tvbox.json";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function showBase64Modal() {
+            const modal = document.getElementById('base64Modal');
+            const output = document.getElementById('base64Output');
+            if (modal) modal.classList.add('show');
+            if (output) output.value = generateBase64();
+        }
+
+        function hideBase64Modal() {
+            const modal = document.getElementById('base64Modal');
+            if (modal) modal.classList.remove('show');
+        }
+
+        function copyJson() {
+            const editor = document.getElementById('jsonEditor');
+            const btn = document.getElementById('copyJsonBtn');
+            if (editor && btn) {
+                navigator.clipboard.writeText(editor.value).then(() => {
+                    const originalHTML = btn.innerHTML;
+                    btn.innerHTML = '✅ 已复制!';
+                    btn.style.background = 'rgba(34, 197, 94, 0.9)';
+                    btn.style.color = 'white';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHTML;
+                        btn.style.background = 'rgba(255, 255, 255, 0.9)';
+                        btn.style.color = '#374151';
+                    }, 2000);
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                    alert('复制失败，请手动选择文本复制');
+                });
+            }
+        }
+
+        function generateBase64() {
+            const str = JSON.stringify(config);
+            const base64 = btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+                return String.fromCharCode('0x' + p1);
+            }));
+            const digits = Array.from({length: 8}, () => Math.floor(Math.random() * 10)).join('');
+            return `${digits}**${base64}`;
+        }
+
+        function copyBase64() {
+            const output = document.getElementById('base64Output');
+            if (output) {
+                navigator.clipboard.writeText(output.value).then(() => {
+                    alert('已复制到剪贴板');
+                });
+            }
+        }
+
+        function resetConfig() {
+            if (confirm("确定要重置所有配置吗？此操作不可恢复。")) {
+                config = {
+                    spider: "",
+                    wallpaper: "https://api.kdcc.cn",
+                    sites: [],
+                    parses: [],
+                    lives: []
+                };
+                addSite();
+                addParse();
+                addLive();
+                renderAll();
+                updateJsonDisplay();
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

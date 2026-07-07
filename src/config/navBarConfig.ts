@@ -79,6 +79,13 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		],
 	});
 
+	// TVBox 配置生成器（独立 HTML 页面）
+	links.push({
+		name: "TVBox",
+		url: "/tvbox.html",
+		icon: "material-symbols:tv",
+	});
+
 	// 仅返回链接，其它导航搜索相关配置在模块顶层常量中独立导出
 	return { links } as NavBarConfig;
 };
